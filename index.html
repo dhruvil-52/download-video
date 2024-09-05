@@ -4,14 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Download MP4</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <h1>Download YouTube Video</h1>
 
     <form id="downloadForm">
-      <label for="videoUrl">YouTube Video URL:</label>
-      <input type="text" id="videoUrl" name="videoUrl" required />
-      <button type="submit">Download Info</button>
+      <div><label for="videoUrl">YouTube Video URL:</label></div>
+      <div><input type="text" id="videoUrl" name="videoUrl" required /></div>
+      <div>
+        <button type="submit">Download Info</button>
+        <button type="button" id="clearButton">Clear</button>
+      </div>
     </form>
 
     <h2 id="title"></h2>
@@ -36,6 +40,14 @@
     <pre id="responseJson"></pre>
 
     <script>
+      // Clear the input when the clear button is clicked
+      document.getElementById("clearButton").addEventListener("click", () => {
+        document.getElementById("videoUrl").value = ""; // Clear the input field
+        document.getElementById("title").textContent = ""; // Clear title
+        document.getElementById("status").textContent = ""; // Clear status
+        document.getElementById("downloadOptions").style.display = "none"; // Hide download options
+        document.getElementById("responseJson").textContent = ""; // Clear response
+      });
       document
         .getElementById("downloadForm")
         .addEventListener("submit", async (event) => {
@@ -55,17 +67,20 @@
           responseJsonElement.textContent = ""; // Clear previous response
 
           try {
-            const response = await fetch("https://download-video-9r4a.onrender.com/downloadmp4", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                data: {
-                  url: videoUrl,
+            const response = await fetch(
+              "https://download-video-9r4a.onrender.com/downloadmp4",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
                 },
-              }),
-            });
+                body: JSON.stringify({
+                  data: {
+                    url: videoUrl,
+                  },
+                }),
+              }
+            );
 
             if (response.ok) {
               const result = await response.json(); // Parse response as JSON
