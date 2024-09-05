@@ -1,0 +1,12 @@
+*{
+    font-family: Arial, Helvetica, sans-serif;
+}
+#downloadForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#videoUrl{
+    width: 300px;
+}

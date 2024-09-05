@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const { alldown } = require("nayan-media-downloader");
+const { ytdown } = require("nayan-media-downloader");
+const { ndown } = require("nayan-media-downloader");
 const app = express();
 const PORT = 3000;
 
@@ -13,16 +15,24 @@ app.listen(PORT, () => {
 });
 
 app.post("/downloadmp4", async (req, res) => {
-  console.log("here", req.body); // Access request body
-  const url = req.body.data.url; // Get URL from the body
+  const url = req.body.data.url;
   console.log(url);
 
   try {
+    console.log("here");
     let resp = await alldown(url);
-    console.log(resp.data);
+    console.log(resp);
     res.status(200).send(resp.data);
   } catch (error) {
-    console.error(error);
+    try {
+      let resp = await ytdown(url);
+      console.log(resp);
+      res.status(200).send(resp.data);
+    } catch {
+      let resp = await ndown(url);
+      console.log(resp);
+      res.status(200).send(resp.data);
+    }
     res.status(500).send("Error downloading video");
   }
 });
