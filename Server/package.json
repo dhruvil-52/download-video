@@ -12,7 +12,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "nayan-media-downloader": "^2.4.9"
+    "nayan-media-downloader": "^2.4.9",
+    "rahad-all-downloader": "^2.1.16"
   },
   "devDependencies": {
     "nodemon": "^1.18.10"

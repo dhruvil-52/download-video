@@ -7,46 +7,45 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h1>Download YouTube Video</h1>
+    <h1>Download Video</h1>
 
     <form id="downloadForm">
-      <div><label for="videoUrl">YouTube Video URL:</label></div>
-      <div><input type="text" id="videoUrl" name="videoUrl" required /></div>
       <div>
-        <button type="submit">Download Info</button>
+        <label for="videoUrl">Video URL:</label>
+      </div>
+      <div>
+        <input type="text" id="videoUrl" name="videoUrl" required />
+      </div>
+      <div>
+        <button type="submit">Download</button>
         <button type="button" id="clearButton">Clear</button>
       </div>
     </form>
 
-    <h2 id="title"></h2>
     <p id="status"></p>
 
+    <div id="videoContainer">
+      <video id="videoPlayer" muted controls>
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
     <div id="downloadOptions" style="display: none">
-      <h3>Download Links:</h3>
+      <h3>Your Video</h3>
       <p>
-        <a id="lowQuality" href="" target="_blank" download
-          >Low Quality (MP4)</a
-        >
-      </p>
-      <p>
-        <a id="highQuality" href="" target="_blank" download
-          >High Quality (MP4)</a
+        <a id="video-link" href="" target="_blank" download
+          >Click Link to Download</a
         >
       </p>
     </div>
 
-    <!-- Section to display the whole response -->
-    <h3>Server Response:</h3>
-    <pre id="responseJson"></pre>
-
     <script>
+      document.getElementById("videoContainer").style.display = "none"; // Hide download options
       // Clear the input when the clear button is clicked
       document.getElementById("clearButton").addEventListener("click", () => {
         document.getElementById("videoUrl").value = ""; // Clear the input field
-        document.getElementById("title").textContent = ""; // Clear title
-        document.getElementById("status").textContent = ""; // Clear status
         document.getElementById("downloadOptions").style.display = "none"; // Hide download options
-        document.getElementById("responseJson").textContent = ""; // Clear response
+        document.getElementById("videoContainer").style.display = "none"; // Hide download options
       });
       document
         .getElementById("downloadForm")
@@ -56,50 +55,42 @@
           const videoUrl = document.getElementById("videoUrl").value;
           const statusElement = document.getElementById("status");
           const downloadOptions = document.getElementById("downloadOptions");
-          const titleElement = document.getElementById("title");
-          const lowQualityLink = document.getElementById("lowQuality");
-          const highQualityLink = document.getElementById("highQuality");
-          const responseJsonElement = document.getElementById("responseJson");
+          const videoLink = document.getElementById("video-link");
+          const videoContainer = document.getElementById("videoContainer");
 
           statusElement.textContent = "Fetching download links...";
           downloadOptions.style.display = "none"; // Hide the download options initially
-          titleElement.textContent = "";
-          responseJsonElement.textContent = ""; // Clear previous response
+          videoContainer.style.display = "none"; // Hide the download options initially
 
           try {
-            const response = await fetch(
-              "https://download-video-9r4a.onrender.com/downloadmp4",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
+            const response = await fetch("http://localhost:3000/downloadmp4", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                data: {
+                  url: videoUrl,
                 },
-                body: JSON.stringify({
-                  data: {
-                    url: videoUrl,
-                  },
-                }),
-              }
-            );
-
+              }),
+            });
             if (response.ok) {
               const result = await response.json(); // Parse response as JSON
+              videoLink.href = result.downloadVideoUrl || "#"; // Set dynamically
 
-              // Display the title and dynamically set download links
-              titleElement.textContent = result.title || "Video";
-              lowQualityLink.href = result.low || "#"; // Set dynamically
-              highQualityLink.href = result.high || "#"; // Set dynamically
-
-              if (result.low && result.high) {
+              if (!!result.downloadVideoUrl) {
                 statusElement.textContent = "Download ready:";
                 downloadOptions.style.display = "block"; // Show the download options
+                videoContainer.style.display = "block";
+
+                const videoUrl = document.getElementById("videoUrl").value;
+                const videoPlayer = document.getElementById("videoPlayer");
+                videoPlayer.src = result.downloadVideoUrl;
+                videoPlayer.play();
               } else {
                 statusElement.textContent =
                   "Could not fetch all download links.";
               }
-
-              // Display the full response as a formatted JSON string
-              responseJsonElement.textContent = JSON.stringify(result, null, 2);
             } else {
               statusElement.textContent = "Failed to fetch video details";
               console.error("Error:", await response.text());
@@ -111,5 +102,7 @@
           }
         });
     </script>
+
+    <script src="./index.js"></script>
   </body>
 </html>
