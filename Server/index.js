@@ -17,8 +17,8 @@ app.post("/downloadmp4", async (req, res) => {
   console.log(url);
   alldl(url).then(
     (resp) => {
+      console.log("22",resp.data);
       if (resp.data && resp.data.videoUrl) {
-        console.log("22");
         let response = resp.data.videoUrl;
         res.status(200).send({ downloadVideoUrl: response });
       } else {
