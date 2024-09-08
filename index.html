@@ -63,17 +63,20 @@
           videoContainer.style.display = "none"; // Hide the download options initially
 
           try {
-            const response = await fetch("http://localhost:3000/downloadmp4", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                data: {
-                  url: videoUrl,
+            const response = await fetch(
+              "https://download-video-9r4a.onrender.com/downloadmp4",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
                 },
-              }),
-            });
+                body: JSON.stringify({
+                  data: {
+                    url: videoUrl,
+                  },
+                }),
+              }
+            );
             if (response.ok) {
               const result = await response.json(); // Parse response as JSON
               videoLink.href = result.downloadVideoUrl || "#"; // Set dynamically
