@@ -46,6 +46,7 @@
         document.getElementById("videoUrl").value = ""; // Clear the input field
         document.getElementById("downloadOptions").style.display = "none"; // Hide download options
         document.getElementById("videoContainer").style.display = "none"; // Hide download options
+        document.getElementById("status").style.display = "none"; // Hide download options
       });
       document
         .getElementById("downloadForm")
@@ -61,10 +62,10 @@
           statusElement.textContent = "Fetching download links...";
           downloadOptions.style.display = "none"; // Hide the download options initially
           videoContainer.style.display = "none"; // Hide the download options initially
-
+          document.getElementById("status").style.display = "block";
           try {
             const response = await fetch(
-              "https://download-video-9r4a.onrender.com/downloadmp4",
+              "https://dst-video-downloader.onrender.com/downloadmp4",
               {
                 method: "POST",
                 headers: {
