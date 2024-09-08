@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const { alldown } = require("nayan-media-downloader");
 const { alldl } = require("rahad-all-downloader");
 const app = express();
 const PORT = 3000;
@@ -15,27 +14,21 @@ app.listen(PORT, () => {
 
 app.post("/downloadmp4", async (req, res) => {
   const url = req.body.data.url;
-  try {
-    let resp = await downloadByRahad(url);
-    let response = resp.data.videoUrl;
-    res.status(200).send({ downloadVideoUrl: response });
-  } catch (error) {
-    try {
-      let resp = await downloadByNayan(url);
-      let response = resp.data.high;
-      res.status(200).send({ downloadVideoUrl: response });
-    } catch (error) {
+  console.log(url);
+  alldl(url).then(
+    (resp) => {
+      if (resp.data && resp.data.videoUrl) {
+        console.log("22");
+        let response = resp.data.videoUrl;
+        res.status(200).send({ downloadVideoUrl: response });
+      } else {
+        console.log("25");
+        res.status(500).send("Error downloading video");
+      }
+    },
+    (err) => {
+      console.log("err 29", err);
       res.status(500).send("Error downloading video");
     }
-  }
+  );
 });
-
-const downloadByNayan = (url) => {
-  let resp = alldown(url);
-  return resp;
-};
-
-const downloadByRahad = (url) => {
-  const result = alldl(url);
-  return result;
-};
